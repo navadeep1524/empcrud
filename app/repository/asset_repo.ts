@@ -2,7 +2,7 @@ import Asset from '#models/asset'
 
 export default class AssetRepository {
   
-  public async createAsset(data: { assetType: string; purchasedAmount: number; employeeId: number }) {
+  public async createAsset(data: {id:number; assetType: string; purchasedAmount: number }) {
     return await Asset.create(data)
   }
 
@@ -28,13 +28,13 @@ export default class AssetRepository {
     id: number
     assetType: string
     purchasedAmount: number
-    employeeId: number
+   
   }) {
     const asset = await Asset.findOrFail(data.id)
 
     asset.assetType = data.assetType
     asset.purchasedAmount = data.purchasedAmount
-    asset.employeeId = data.employeeId
+   
 
     await asset.save()
     return asset
@@ -44,13 +44,13 @@ export default class AssetRepository {
   public async patchAsset(id: number, data: {
     assetType?: string
     purchasedAmount?: number
-    employeeId?: number
+    
   }) {
     const asset = await Asset.findOrFail(id)
 
     if (data.assetType !== undefined) asset.assetType = data.assetType
     if (data.purchasedAmount !== undefined) asset.purchasedAmount = data.purchasedAmount
-    if (data.employeeId !== undefined) asset.employeeId = data.employeeId
+   
 
     await asset.save()
     return asset

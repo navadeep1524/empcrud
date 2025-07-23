@@ -2,9 +2,10 @@ import vine from '@vinejs/vine'
 
 export const createEmployeeValidator = vine.compile(
   vine.object({
+    id: vine.number().positive(),
     empName: vine.string().trim().minLength(3).maxLength(50),
     empRole: vine.string().trim().minLength(2).maxLength(100),
-    empSalary: vine.number().positive().min(1000), 
+    empSalary: vine.number().positive().min(1000),
   })
 )
 export const updateEmployeeValidator = vine.compile(

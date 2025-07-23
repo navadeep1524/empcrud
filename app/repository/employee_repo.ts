@@ -2,7 +2,7 @@ import Employee from '#models/employee'
 
 export default class EmployeeRepository {
   
-  public async createEmployee(data: { empName: string; empRole: string; empSalary: number }) {
+  public async createEmployee(data: { id:number , empName: string; empRole: string; empSalary: number }) {
     return await Employee.create(data)
   }
   

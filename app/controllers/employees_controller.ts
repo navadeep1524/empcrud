@@ -11,6 +11,7 @@ export default class EmployeesController {
   async createEmployee({ request, response }: HttpContext): Promise<any> {
     try {
       const payload = await request.validateUsing(createEmployeeValidator)
+
       const employee = await this.repo.createEmployee(payload)
 
       return response.created({
@@ -19,6 +20,14 @@ export default class EmployeesController {
         data: employee,
       })
     } catch (error) {
+      if (error.code === '23505') {
+        return response.status(400).json({
+          status: false,
+          message: 'ID already exists. Please use a different ID.',
+          error: error.message,
+        })
+      }
+
       return response.status(500).json({
         status: false,
         message: 'Failed to create employee',
@@ -26,6 +35,7 @@ export default class EmployeesController {
       })
     }
   }
+
   async getEmployeeById({ request, response }: HttpContext): Promise<any> {
     try {
       const { id } = request.params()
@@ -59,23 +69,22 @@ export default class EmployeesController {
     }
   }
   async getEmployee({ response }: HttpContext): Promise<any> {
-  try {
-    const employees = await this.repo.getEmployee()
-
-    return response.ok({
-      status: true,
-      message: 'Employees fetched successfully',
-      data: employees,
-    })
-  } catch (error) {
-    return response.status(500).json({
-      status: false,
-      message: 'Failed to fetch employees',
-      error: error.message,
-    })
+    try {
+      const employees = await this.repo.getEmployee()
+      return response.ok({
+        status: true,
+        message: 'Employees fetched successfully',
+        data: employees,
+      })
+    } catch (error) {
+      return response.status(500).json({
+        status: false,
+        message: 'Failed to fetch employees',
+        error: error.message,
+      })
+    }
   }
-}
-async deleteEmployee({ request, response }: HttpContext): Promise<any> {
+  async deleteEmployee({ request, response }: HttpContext): Promise<any> {
     try {
       const { id } = request.params()
 
@@ -85,9 +94,8 @@ async deleteEmployee({ request, response }: HttpContext): Promise<any> {
           message: 'Employee Id is required',
         })
       }
-      const employee = await this.repo.deleteEmployee(id)
 
-     
+      const employee = await this.repo.deleteEmployee(Number(id))
 
       return response.ok({
         status: true,
@@ -97,30 +105,31 @@ async deleteEmployee({ request, response }: HttpContext): Promise<any> {
     } catch (error) {
       return response.status(500).json({
         status: false,
-        message: 'Failed to retrieve employee',
+        message: 'Failed to delete employee',
         error: error.message,
       })
     }
   }
-  async putEmployee({ request, response }: HttpContext): Promise<any> {
-  try {
-    const payload = await request.validateUsing(updateEmployeeValidator)
-    const employee = await this.repo.updateEmployee(payload)
 
-    return response.ok({
-      status: true,
-      message: 'Employee updated successfully',
-      data: employee,
-    })
-  } catch (error) {
-    return response.status(500).json({
-      status: false,
-      message: 'Failed to update employee',
-      error: error.message,
-    })
+  async putEmployee({ request, response }: HttpContext): Promise<any> {
+    try {
+      const payload = await request.validateUsing(updateEmployeeValidator)
+      const employee = await this.repo.updateEmployee(payload)
+
+      return response.ok({
+        status: true,
+        message: 'Employee updated successfully',
+        data: employee,
+      })
+    } catch (error) {
+      return response.status(500).json({
+        status: false,
+        message: 'Failed to update employee',
+        error: error.message,
+      })
+    }
   }
-}
- async patchEmployee({ request, response }: HttpContext): Promise<any> {
+  async patchEmployee({ request, response }: HttpContext): Promise<any> {
     try {
       const { id } = request.params()
 
@@ -147,7 +156,7 @@ async deleteEmployee({ request, response }: HttpContext): Promise<any> {
       })
     }
   }
-   async getEmployeesByFields({ request, response }: HttpContext): Promise<any> {
+  async getEmployeesByFields({ request, response }: HttpContext): Promise<any> {
     try {
       const filters = await request.validateUsing(getEmployeeByFieldsValidator)
 
@@ -181,9 +190,3 @@ async deleteEmployee({ request, response }: HttpContext): Promise<any> {
     }
   }
 }
-
-
-
-  
-
-

@@ -1,7 +1,7 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { createAssetValidator } from '#validators/asset_man'
 import { updateAssetValidator } from '#validators/asset_man'
-import { patchAssetValidator } from '#validators/asset_man'
+// import { patchAssetValidator } from '#validators/asset_man'
 import AssetRepository from '../repository/asset_repo.js'
 
 export default class AssetsController {
